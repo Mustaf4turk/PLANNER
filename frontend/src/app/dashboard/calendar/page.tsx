@@ -61,19 +61,19 @@ export default function CalendarPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Takvim</h1>
+      <div className="flex items-center justify-between animate-fade-in">
+        <h1 className="text-3xl font-extrabold text-white">Takvim</h1>
         <div className="flex items-center gap-3">
-          <button onClick={prevMonth} className="p-2 bg-dark-card border border-dark-border rounded-xl text-slate-300 hover:bg-dark-hover transition-colors">
+          <button onClick={prevMonth} className="p-2.5 glass rounded-xl text-slate-300 hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <button onClick={goToday} className="px-4 py-2 bg-dark-card border border-dark-border rounded-xl text-slate-300 hover:bg-dark-hover transition-colors text-sm font-medium">
+          <button onClick={goToday} className="px-4 py-2.5 glass rounded-xl text-slate-300 hover:bg-white/10 transition-all text-sm font-semibold">
             Bugün
           </button>
-          <span className="text-lg font-semibold text-white min-w-[180px] text-center capitalize">{monthName}</span>
-          <button onClick={nextMonth} className="p-2 bg-dark-card border border-dark-border rounded-xl text-slate-300 hover:bg-dark-hover transition-colors">
+          <span className="text-lg font-bold text-white min-w-[180px] text-center capitalize">{monthName}</span>
+          <button onClick={nextMonth} className="p-2.5 glass rounded-xl text-slate-300 hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
@@ -82,11 +82,11 @@ export default function CalendarPage() {
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden">
+      <div className="glass rounded-2xl overflow-hidden animate-fade-in">
         {/* Week headers */}
-        <div className="grid grid-cols-7 border-b border-dark-border">
+        <div className="grid grid-cols-7 border-b border-white/5">
           {weekDays.map(d => (
-            <div key={d} className="py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div key={d} className="py-3.5 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">
               {d}
             </div>
           ))}
@@ -99,16 +99,16 @@ export default function CalendarPage() {
             return (
               <div
                 key={idx}
-                className={`min-h-[120px] border-r border-b border-dark-border p-2 ${
-                  day === null ? 'bg-dark-bg/30' : 'hover:bg-dark-hover/20'
-                } ${isToday(day!) ? 'bg-brand-600/10' : ''} transition-colors`}
+                className={`min-h-[120px] border-r border-b border-white/5 p-2 ${
+                  day === null ? 'bg-white/[0.01]' : 'hover:bg-white/[0.03]'
+                } ${isToday(day!) ? 'bg-brand-600/5' : ''} transition-colors`}
               >
                 {day !== null && (
                   <>
-                    <div className={`text-sm mb-1 ${
+                    <div className={`text-sm mb-1.5 ${
                       isToday(day)
-                        ? 'w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold'
-                        : 'text-slate-400 pl-1'
+                        ? 'w-7 h-7 rounded-full bg-gradient-to-br from-brand-500 to-accent-purple text-white flex items-center justify-center font-bold shadow-glow'
+                        : 'text-slate-400 pl-1 font-medium'
                     }`}>
                       {day}
                     </div>
@@ -116,10 +116,10 @@ export default function CalendarPage() {
                       {dayTasks.slice(0, 3).map(task => (
                         <div
                           key={task.id}
-                          className={`text-[11px] px-2 py-1 rounded-md truncate ${
-                            task.status === 'done' ? 'bg-emerald-500/20 text-emerald-400' :
-                            task.status === 'in-progress' ? 'bg-amber-500/20 text-amber-400' :
-                            'bg-brand-500/20 text-brand-300'
+                          className={`text-[11px] px-2 py-1 rounded-md truncate font-medium ${
+                            task.status === 'done' ? 'bg-emerald-500/15 text-emerald-400' :
+                            task.status === 'in-progress' ? 'bg-amber-500/15 text-amber-400' :
+                            'bg-brand-500/15 text-brand-300'
                           }`}
                           title={`${task.title} - ${task.project?.name}`}
                         >
@@ -127,7 +127,7 @@ export default function CalendarPage() {
                         </div>
                       ))}
                       {dayTasks.length > 3 && (
-                        <div className="text-[10px] text-slate-500 pl-2">+{dayTasks.length - 3} daha</div>
+                        <div className="text-[10px] text-slate-500 pl-2 font-medium">+{dayTasks.length - 3} daha</div>
                       )}
                     </div>
                   </>

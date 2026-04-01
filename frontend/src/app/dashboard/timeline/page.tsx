@@ -33,9 +33,15 @@ export default function TimelinePage() {
   if (dates.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white">Zaman Çizelgesi</h1>
-        <div className="text-center py-16">
-          <p className="text-slate-400">Tarih bilgisi olan görev bulunmuyor. Görevlere başlangıç ve bitiş tarihi ekleyin.</p>
+        <h1 className="text-3xl font-extrabold text-white animate-fade-in">Zaman Çizelgesi</h1>
+        <div className="text-center py-20 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl glass mb-5">
+            <svg className="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="text-slate-400 text-lg font-medium">Tarih bilgisi olan görev bulunmuyor</p>
+          <p className="text-slate-500 text-sm mt-1">Görevlere başlangıç ve bitiş tarihi ekleyin</p>
         </div>
       </div>
     );
@@ -79,29 +85,35 @@ export default function TimelinePage() {
   }, {} as Record<string, Task[]>);
 
   const statusColor = (status: string) => {
-    if (status === 'done') return 'bg-emerald-500';
-    if (status === 'in-progress') return 'bg-amber-500';
-    return 'bg-brand-500';
+    if (status === 'done') return 'bg-gradient-to-r from-emerald-500 to-teal-400';
+    if (status === 'in-progress') return 'bg-gradient-to-r from-amber-500 to-orange-400';
+    return 'bg-gradient-to-r from-brand-500 to-blue-400';
+  };
+
+  const statusDot = (status: string) => {
+    if (status === 'done') return 'bg-emerald-400';
+    if (status === 'in-progress') return 'bg-amber-400';
+    return 'bg-brand-400';
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-white">Zaman Çizelgesi</h1>
+      <h1 className="text-3xl font-extrabold text-white animate-fade-in">Zaman Çizelgesi</h1>
 
-      <div className="bg-dark-card rounded-2xl border border-dark-border overflow-x-auto">
+      <div className="glass rounded-2xl overflow-x-auto animate-fade-in">
         <div style={{ minWidth: `${totalDays * dayWidth + 250}px` }}>
           {/* Header */}
-          <div className="flex border-b border-dark-border sticky top-0 bg-dark-card z-10">
-            <div className="w-[250px] flex-shrink-0 px-4 py-3 border-r border-dark-border">
-              <span className="text-sm font-medium text-slate-400">Görev</span>
+          <div className="flex border-b border-white/5 sticky top-0 bg-dark-card/80 backdrop-blur-xl z-10">
+            <div className="w-[250px] flex-shrink-0 px-4 py-3 border-r border-white/5">
+              <span className="text-sm font-semibold text-slate-400">Görev</span>
             </div>
             <div className="flex">
               {dayHeaders.map((dh, i) => (
                 <div
                   key={i}
-                  className={`flex-shrink-0 text-center border-r border-dark-border py-2 ${
-                    dh.isToday ? 'bg-brand-600/20' : ''
-                  } ${dh.isFirstOfMonth ? 'border-l-2 border-l-slate-500' : ''}`}
+                  className={`flex-shrink-0 text-center border-r border-white/5 py-2 ${
+                    dh.isToday ? 'bg-brand-600/10' : ''
+                  } ${dh.isFirstOfMonth ? 'border-l-2 border-l-brand-500/30' : ''}`}
                   style={{ width: `${dayWidth}px` }}
                 >
                   {dh.isFirstOfMonth && (
@@ -121,9 +133,9 @@ export default function TimelinePage() {
           {Object.entries(tasksByProject).map(([projectName, projectTasks]) => (
             <div key={projectName}>
               {/* Project Header */}
-              <div className="flex border-b border-dark-border bg-dark-bg/30">
-                <div className="w-[250px] flex-shrink-0 px-4 py-2 border-r border-dark-border">
-                  <span className="text-xs font-semibold text-brand-400 uppercase tracking-wide">{projectName}</span>
+              <div className="flex border-b border-white/5 bg-white/[0.02]">
+                <div className="w-[250px] flex-shrink-0 px-4 py-2.5 border-r border-white/5">
+                  <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">{projectName}</span>
                 </div>
                 <div style={{ width: `${totalDays * dayWidth}px` }} />
               </div>
@@ -135,10 +147,10 @@ export default function TimelinePage() {
                 const duration = Math.max(1, getDayOffset(end) - startOffset + 1);
 
                 return (
-                  <div key={task.id} className="flex border-b border-dark-border hover:bg-dark-hover/20 transition-colors">
-                    <div className="w-[250px] flex-shrink-0 px-4 py-3 border-r border-dark-border flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${statusColor(task.status)}`} />
-                      <span className="text-sm text-white truncate">{task.title}</span>
+                  <div key={task.id} className="flex border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                    <div className="w-[250px] flex-shrink-0 px-4 py-3 border-r border-white/5 flex items-center gap-2.5">
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${statusDot(task.status)} ring-2 ring-white/5`} />
+                      <span className="text-sm text-white truncate font-medium">{task.title}</span>
                     </div>
                     <div className="relative" style={{ width: `${totalDays * dayWidth}px`, height: '44px' }}>
                       {/* Today line */}
@@ -148,7 +160,7 @@ export default function TimelinePage() {
                       />
                       {/* Bar */}
                       <div
-                        className={`absolute top-2 h-7 rounded-lg ${statusColor(task.status)} opacity-80 hover:opacity-100 transition-opacity flex items-center px-2`}
+                        className={`absolute top-2 h-7 rounded-lg ${statusColor(task.status)} opacity-90 hover:opacity-100 transition-opacity flex items-center px-2 shadow-md`}
                         style={{
                           left: `${startOffset * dayWidth + 2}px`,
                           width: `${duration * dayWidth - 4}px`,
