@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Providers from './providers';
 
 export const metadata: Metadata = {
   title: 'Planner - Proje Yönetim Aracı',
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="tr" className="dark">
       <body className="min-h-screen bg-dark-bg">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
