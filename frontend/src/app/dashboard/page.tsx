@@ -178,9 +178,19 @@ export default function DashboardPage() {
                   className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-all duration-300 group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500/20 to-accent-purple/20 flex items-center justify-center text-brand-400 font-bold text-sm">
-                      {project.name.charAt(0)}
-                    </div>
+                    {project.logo ? (
+                      project.logo.startsWith('/uploads/') || project.logo.startsWith('http') ? (
+                        <img src={project.logo} alt={project.name} className="w-10 h-10 rounded-xl object-cover shadow-md ring-1 ring-white/10" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-xl shadow-md ring-1 ring-white/10">
+                          {project.logo}
+                        </div>
+                      )
+                    ) : (
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500/20 to-accent-purple/20 flex items-center justify-center text-brand-400 font-bold text-sm">
+                        {project.name.charAt(0)}
+                      </div>
+                    )}
                     <div>
                       <p className="font-semibold text-white group-hover:text-brand-300 transition-colors">{project.name}</p>
                       <p className="text-xs text-slate-500 mt-0.5">{project._count?.tasks || 0} görev</p>

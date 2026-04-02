@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Project, Task, ProjectMember } from '@/lib/types';
+import ConfirmModal, { useConfirmModal } from '@/components/ConfirmModal';
 
 const STATUS_COLUMNS = [
   { key: 'todo' as const, label: 'Yapılacaklar', color: 'bg-slate-400', gradient: 'from-slate-400 to-slate-500', bgColor: 'bg-slate-500/5' },
@@ -39,6 +40,9 @@ export default function ProjectDetailPage() {
   const [showInvite, setShowInvite] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteError, setInviteError] = useState('');
+
+  // Confirm modal
+  const { confirm, modalProps } = useConfirmModal();
 
   const loadData = async () => {
     try {
@@ -117,13 +121,18 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const handleDeleteTask = async (id: number) => {
-    try {
-      await api.tasks.delete(id);
-      loadData();
-    } catch (err) {
-      console.error(err);
-    }
+  const handleDeleteTask = (id: number) => {
+    confirm({
+      title: 'Görevi Sil',
+      message: 'Bu görevi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
+      confirmText: 'Sil',
+      cancelText: 'Vazgeç',
+      variant: 'danger',
+      onConfirm: async () => {
+        await api.tasks.delete(id);
+        loadData();
+      },
+    });
   };
 
   const handleInvite = async (e: React.FormEvent) => {
@@ -152,12 +161,24 @@ export default function ProjectDetailPage() {
   }
 
   return (
+    <>
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-3xl font-extrabold text-white">{project.name}</h1>
-          {project.description && <p className="text-slate-400 text-sm mt-2">{project.description}</p>}
+        <div className="flex items-center gap-4">
+          {project.logo && (
+            project.logo.startsWith('/uploads/') || project.logo.startsWith('http') ? (
+              <img src={project.logo} alt={project.name} className="w-14 h-14 rounded-2xl object-cover shadow-lg ring-1 ring-white/10" />
+            ) : (
+              <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-3xl shadow-lg ring-1 ring-white/10">
+                {project.logo}
+              </div>
+            )
+          )}
+          <div>
+            <h1 className="text-3xl font-extrabold text-white">{project.name}</h1>
+            {project.description && <p className="text-slate-400 text-sm mt-2">{project.description}</p>}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -225,19 +246,30 @@ export default function ProjectDetailPage() {
                 {colTasks.map(task => (
                   <div
                     key={task.id}
-                    className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:border-white/10 hover:bg-white/[0.06] transition-all duration-300 cursor-pointer group"
-                    onDoubleClick={() => handleEditTask(task)}
+                    className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:border-white/10 hover:bg-white/[0.06] transition-all duration-300 group"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="text-sm font-semibold text-white flex-1">{task.title}</h4>
-                      <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="p-1 text-slate-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-all">
+                        <button
+                          onClick={() => handleEditTask(task)}
+                          className="p-1 text-slate-600 hover:text-brand-400 hover:bg-brand-500/10 rounded-lg transition-all"
+                          title="Görevi Düzenle"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="p-1 text-slate-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                          title="Görevi Sil"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     {task.description && <p className="text-xs text-slate-400 mb-3 line-clamp-2">{task.description}</p>}
 
@@ -523,5 +555,9 @@ export default function ProjectDetailPage() {
         </div>
       )}
     </div>
+
+    {/* Confirm Modal */}
+    <ConfirmModal {...modalProps} />
+    </>
   );
 }
