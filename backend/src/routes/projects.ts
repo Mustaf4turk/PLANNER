@@ -67,7 +67,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response): Prom
 // Create project
 router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { name, description } = req.body;
+    const { name, description, logo } = req.body;
 
     if (!name) {
       res.status(400).json({ error: 'Proje adı gerekli' });
@@ -78,6 +78,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       data: {
         name,
         description,
+        logo: logo || null,
         ownerId: req.userId!,
         members: {
           create: { userId: req.userId!, role: 'owner' },
@@ -99,7 +100,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
 router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const projectId = parseInt(req.params.id);
-    const { name, description } = req.body;
+    const { name, description, logo } = req.body;
 
     const project = await prisma.project.findFirst({
       where: { id: projectId, ownerId: req.userId },
@@ -112,7 +113,7 @@ router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response): Prom
 
     const updated = await prisma.project.update({
       where: { id: projectId },
-      data: { name, description },
+      data: { name, description, ...(logo !== undefined && { logo: logo || null }) },
     });
 
     res.json(updated);

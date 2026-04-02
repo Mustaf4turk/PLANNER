@@ -9,6 +9,7 @@ export interface Project {
   id: number;
   name: string;
   description?: string | null;
+  logo?: string | null;
   ownerId: number;
   createdAt: string;
   updatedAt: string;

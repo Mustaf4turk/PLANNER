@@ -39,9 +39,9 @@ export const api = {
   projects: {
     list: () => request<any[]>('/projects'),
     get: (id: number) => request<any>(`/projects/${id}`),
-    create: (data: { name: string; description?: string }) =>
+    create: (data: { name: string; description?: string; logo?: string }) =>
       request<any>('/projects', { method: 'POST', body: JSON.stringify(data) }),
-    update: (id: number, data: { name?: string; description?: string }) =>
+    update: (id: number, data: { name?: string; description?: string; logo?: string }) =>
       request<any>(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: number) =>
       request<any>(`/projects/${id}`, { method: 'DELETE' }),
@@ -71,5 +71,28 @@ export const api = {
     teammates: () => request<any[]>('/members/teammates'),
     remove: (memberId: number) =>
       request<any>(`/members/${memberId}`, { method: 'DELETE' }),
+  },
+
+  upload: {
+    logo: async (file: File): Promise<{ url: string }> => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const formData = new FormData();
+      formData.append('logo', file);
+
+      const res = await fetch(`${API_BASE}/upload/logo`, {
+        method: 'POST',
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Dosya yükleme hatası');
+      }
+
+      return res.json();
+    },
   },
 };
